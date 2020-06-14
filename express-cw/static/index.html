@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Generowanie linku query</title>
+</head>
+
+<body>
+   <form>
+      <label for="nameInput">Imię:
+         <br>
+         <input type="text" id="nameInput">
+      </label>
+      <br>
+      <label for="surnameInput">Nazwisko:
+         <br>
+         <input type="text" id="surnameInput">
+      </label>
+      <br>
+      <button type="submit">Wygeneruj link query</button>
+      <br>
+      <a id="link-query" href="">Nowy link</a>
+      <a href="http://localhost:3000/request">Obiekt request - metody</a>
+   </form>
+
+   <script>
+      const nameInput = document.querySelector('#nameInput');
+      const surnameInput = document.querySelector('#surnameInput');
+      const form = document.querySelector('form');
+      const a = document.querySelector('#link-query');
+
+      form.addEventListener('submit', (e) => {
+         e.preventDefault();
+
+         const name = nameInput.value;
+         const surname = surnameInput.value;
+
+         // //użycie metody encodeURIComponent()
+         // const url =
+         //    `http://localhost:3000/?name=${encodeURIComponent(name)}&surname=${encodeURIComponent(surname)}`;
+         // a.setAttribute('href', url);
+
+         //użycie obiektu URLSearchParams()
+         const params = new URLSearchParams({
+            name: name,
+            surname: surname
+         });
+         a.setAttribute('href', `http://localhost:3000/request?${params}`);
+
+      });
+   </script>
+</body>
+
+</html>
