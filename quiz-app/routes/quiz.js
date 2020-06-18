@@ -31,7 +31,7 @@ const quiz = (app) => {
 
       res.json({
          question,
-         answers
+         answers,
       })
 
    })
@@ -45,9 +45,11 @@ const quiz = (app) => {
       if (pickedAnswer == correctAnswer) {
          console.log('poprawna odpowiedź!')
          correctAnswersCounter++
+         const isWinner = correctAnswersCounter === questions.length ? true : false
          res.json({
             answeredCorrect: true,
-            correctAnswersCounter
+            correctAnswersCounter,
+            isWinner
          })
       } else {
          console.log('zła odpowiedź!')

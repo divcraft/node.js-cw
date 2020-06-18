@@ -1,51 +1,48 @@
 const buttons = document.querySelectorAll('button')
 
-const fetchNewQuestion = () => {
+buttons.forEach(button => {
+   button.addEventListener('click', () => postAnswer(button))
+})
 
-   fetch('/question', {
-      method: 'GET'
-   })
+const getNewQuestion = () => {
+   fetch('/question', { method: 'GET' })
       .then(response => response.json())
       .then(data => fillNewQuestion(data))
-
 }
 
 const fillNewQuestion = ({ question, answers }) => {
-
    const questionField = document.querySelector('#question')
    questionField.innerText = question
-
    for (index in answers) {
       buttons[index].innerText = answers[index]
    }
-
 }
 
-buttons.forEach(button => {
-   button.addEventListener('click', () => sendAnswer(button))
-})
-
-const sendAnswer = (button) => {
-
-   fetch(`/answer/${button.innerText}`, {
-      method: 'POST'
-   })
+const postAnswer = (button) => {
+   fetch(`/answer/${button.innerText}`, { method: 'POST' })
       .then(response => response.json())
       .then(data => chceckAnswer(data))
-
 }
 
-const chceckAnswer = ({ answeredCorrect, correctAnswersCounter }) => {
-
+const chceckAnswer = ({ answeredCorrect, correctAnswersCounter, isWinner }) => {
    if (answeredCorrect) {
       console.log('poprawnie!')
       const counter = document.querySelector('#gained-points')
       counter.innerText = correctAnswersCounter
-      fetchNewQuestion()
+      if (isWinner) {
+         endGame(isWinner)
+      } else {
+         getNewQuestion()
+      }
    } else {
       console.log('niepoprawnie!')
+      endGame(isWinner)
    }
-
 }
 
-fetchNewQuestion()
+const endGame = (isWinner) => {
+   const mainContainer = document.querySelector('#main-container')
+   mainContainer.innerHTML = isWinner ? '<h1>Wygrana!</h1>' : '<h1>Przegrana!</h1>'
+}
+
+getNewQuestion()
