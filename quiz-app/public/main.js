@@ -1,8 +1,9 @@
-const buttons = document.querySelectorAll('button')
+const answerButtons = document.querySelectorAll('.answer-button')
+const lifelineButtons = document.querySelectorAll('.lifeline-button')
+const friendAnswerField = document.querySelector('#lifeline-answer')
 
-buttons.forEach(button => {
-   button.addEventListener('click', () => postAnswer(button))
-})
+answerButtons.forEach(button => button.addEventListener('click', () => postAnswer(button)))
+lifelineButtons.forEach(button => button.addEventListener('click', () => getLifeline(button)))
 
 const getNewQuestion = () => {
    fetch('/question', { method: 'GET' })
@@ -11,10 +12,11 @@ const getNewQuestion = () => {
 }
 
 const fillNewQuestion = ({ question, answers }) => {
+   if (friendAnswerField.innerText) friendAnswerField.innerText = ''
    const questionField = document.querySelector('#question')
    questionField.innerText = question
    for (index in answers) {
-      buttons[index].innerText = answers[index]
+      answerButtons[index].innerText = answers[index]
    }
 }
 
@@ -43,6 +45,24 @@ const chceckAnswer = ({ answeredCorrect, correctAnswersCounter, isWinner }) => {
 const endGame = (isWinner) => {
    const mainContainer = document.querySelector('#main-container')
    mainContainer.innerHTML = isWinner ? '<h1>Wygrana!</h1>' : '<h1>Przegrana!</h1>'
+}
+
+const getLifeline = (button) => {
+   let apiLink = `/help/${button.id}`
+   fetch(apiLink, { method: 'GET' })
+      .then(response => response.json())
+      .then(data => showLifeline(button, data))
+}
+
+const showLifeline = (button, data) => {
+   if (button.id === 'phone-a-friend') {
+      friendAnswerField.innerText = data.friendAnswer
+   } else if (button.id === 'fifty-fifty') {
+      console.log(data)
+   } else if (button.id === 'ask-the-audience') {
+      console.log(data)
+   }
+   // button.setAttribute('disabled', true)
 }
 
 getNewQuestion()

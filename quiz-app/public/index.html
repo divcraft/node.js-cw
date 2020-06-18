@@ -10,16 +10,26 @@
 <body>
    <h1>Quiz app</h1>
    <h2>Liczba punktów: <span id="gained-points">0</span></h2>
-   <br>
+   <hr>
    <div id="main-container">
       <h2>Pytanie:
          <div id="question"></div>
       </h2>
       <br>
-      <button id="answer1">Odpowiedź 1</button>
-      <button id="answer2">Odpowiedź 2</button>
-      <button id="answer3">Odpowiedź 3</button>
-      <button id="answer4">Odpowiedź 4</button>
+      <button class="answer-button" id="answer1">Odpowiedź 1</button>
+      <button class="answer-button" id="answer2">Odpowiedź 2</button>
+      <button class="answer-button" id="answer3">Odpowiedź 3</button>
+      <button class="answer-button" id="answer4">Odpowiedź 4</button>
+      <hr>
+      <br>
+      <div id="lifelines">
+         <button class="lifeline-button" id="phone-a-friend">Telefon do przyjaciela</button>
+         <button class="lifeline-button" id="fifty-fifty">Pół na pół</button>
+         <button class="lifeline-button" id="ask-the-audience">Pytanie do publiczności</button>
+         <br>
+         <br>
+         <div id="lifeline-answer"></div>
+      </div>
    </div>
 
    <script src="./main.js"></script>

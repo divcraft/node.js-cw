@@ -59,6 +59,23 @@ const quiz = (app) => {
       }
    })
 
+   app.get('/help/:lifeline', (req, res) => {
+      const { lifeline } = req.params
+      if (lifeline === 'phone-a-friend') {
+         const friendAnswer = Math.random() > 0.2 ? `Wydaje mi się, że odpowiedź to ${'.opd.'}` : 'Nie mam zielonego pojęcia...'
+         res.json({
+            friendAnswer
+         })
+      } else if (lifeline === 'fifty-fifty') {
+         res.json({
+            fifty: true
+         })
+      } else if (lifeline === 'ask-the-audience') {
+         res.json({
+            audience: true
+         })
+      }
+   })
 }
 
 module.exports = quiz
