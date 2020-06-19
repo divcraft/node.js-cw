@@ -13,6 +13,10 @@ const getNewQuestion = () => {
 
 const fillNewQuestion = ({ question, answers }) => {
    if (friendAnswerField.innerText) friendAnswerField.innerText = ''
+   answerButtons.forEach(answerButton => {
+      const isDisabled = answerButton.getAttribute('disabled')
+      if (isDisabled) answerButton.removeAttribute('disabled')
+   })
    const questionField = document.querySelector('#question')
    questionField.innerText = question
    for (index in answers) {
@@ -56,13 +60,22 @@ const getLifeline = (button) => {
 
 const showLifeline = (button, data) => {
    if (button.id === 'phone-a-friend') {
-      friendAnswerField.innerText = data.friendAnswer
+
+      const { friendAnswer } = data
+      friendAnswerField.innerText = friendAnswer
    } else if (button.id === 'fifty-fifty') {
-      console.log(data)
+
+      const { answersToRemove } = data
+      answerButtons.forEach(answerButton => {
+         answersToRemove.forEach(item => {
+            if (item === answerButton.innerText) answerButton.setAttribute('disabled', true)
+         })
+      })
    } else if (button.id === 'ask-the-audience') {
+
       console.log(data)
    }
-   // button.setAttribute('disabled', true)
+   button.setAttribute('disabled', true)
 }
 
 getNewQuestion()

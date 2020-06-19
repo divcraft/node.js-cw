@@ -60,15 +60,21 @@ const quiz = (app) => {
    })
 
    app.get('/help/:lifeline', (req, res) => {
+
       const { lifeline } = req.params
+      const currentQuestion = questions[correctAnswersCounter]
+      const { answers, correctAnswer } = currentQuestion
+
       if (lifeline === 'phone-a-friend') {
-         const friendAnswer = Math.random() > 0.2 ? `Wydaje mi się, że odpowiedź to ${'.opd.'}` : 'Nie mam zielonego pojęcia...'
+         const friendAnswer = Math.random() > 0.2 ? `Wydaje mi się, że poprawna odpowiedź to: ${correctAnswer}` : 'Nie mam zielonego pojęcia...'
          res.json({
             friendAnswer
          })
       } else if (lifeline === 'fifty-fifty') {
+         const answersToRemove = answers.filter(answer => answer !== correctAnswer)
+         answersToRemove.splice(Math.floor(Math.random() * answersToRemove.length), 1)
          res.json({
-            fifty: true
+            answersToRemove,
          })
       } else if (lifeline === 'ask-the-audience') {
          res.json({
