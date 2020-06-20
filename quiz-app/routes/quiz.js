@@ -45,7 +45,6 @@ const quiz = (app) => {
       if (pickedAnswer == correctAnswer) {
          console.log('poprawna odpowiedź!')
          correctAnswersCounter++
-         res.cookie('correctAnswersCounter', correctAnswersCounter)
          const isWinner = correctAnswersCounter === questions.length ? true : false
          if (isWinner) {
             res.clearCookie('correctAnswersCounter')
@@ -53,6 +52,8 @@ const quiz = (app) => {
             res.clearCookie('isFiftyFiftyUsed')
             res.clearCookie('isAskTheAudienceUsed')
             correctAnswersCounter = 0
+         } else {
+            res.cookie('correctAnswersCounter', correctAnswersCounter)
          }
          res.json({
             answeredCorrect: true,
