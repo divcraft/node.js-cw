@@ -68,7 +68,7 @@ const quiz = (app) => {
       if (lifeline === 'phone-a-friend') {
          const friendAnswer = Math.random() > 0.2 ? `Wydaje mi się, że poprawna odpowiedź to: ${correctAnswer}` : 'Nie mam zielonego pojęcia...'
          res.json({
-            friendAnswer
+            friendAnswer,
          })
       } else if (lifeline === 'fifty-fifty') {
          const answersToRemove = answers.filter(answer => answer !== correctAnswer)
@@ -77,8 +77,18 @@ const quiz = (app) => {
             answersToRemove,
          })
       } else if (lifeline === 'ask-the-audience') {
+         const charts = [10, 20, 30, 40]
+         const goodAnswerIndex = answers.findIndex(answer => answer === correctAnswer)
+         const chartsLastIndex = charts.length - 1
+         for (let i = chartsLastIndex; i > 0; i--) {
+            const change = Math.floor(Math.random() * 20 - 10)
+            charts[i] += change
+            charts[i - 1] -= change
+         }
+         charts.splice(goodAnswerIndex, 0, charts[chartsLastIndex])
+         charts.splice(charts.length, 1)
          res.json({
-            audience: true
+            charts,
          })
       }
    })

@@ -72,8 +72,15 @@ const showLifeline = (button, data) => {
          })
       })
    } else if (button.id === 'ask-the-audience') {
-
-      console.log(data)
+      const { charts } = data
+      friendAnswerField.innerHTML = `
+      <div>Odpowiedzi publiczności:</div>
+      <br>
+      <div>${answerButtons[0].innerText}: ${charts[0]}%</div>
+      <div>${answerButtons[1].innerText}: ${charts[1]}%</div>
+      <div>${answerButtons[2].innerText}: ${charts[2]}%</div>
+      <div>${answerButtons[3].innerText}: ${charts[3]}%</div>
+      `
    }
    button.setAttribute('disabled', true)
 }
