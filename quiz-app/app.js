@@ -1,4 +1,5 @@
 const express = require('express')
+const cookieParser = require('cookie-parser')
 const quiz = require('./routes/quiz')
 
 const app = express()
@@ -9,5 +10,6 @@ app.listen(port, 'localhost', () => {
 })
 
 app.use(express.static('./public'))
+app.use(cookieParser())
 
 quiz(app) 

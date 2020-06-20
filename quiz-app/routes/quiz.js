@@ -22,10 +22,11 @@ const quiz = (app) => {
          correctAnswer: '400 tys'
       }
    ]
+
    let correctAnswersCounter = 0
 
    app.get('/question', (req, res) => {
-
+      correctAnswersCounter = Number(req.cookies.correctAnswersCounter) || 0
       const nextQuestion = questions[correctAnswersCounter] // wydziela z tablicy pytań następne pytanie które należy zadać
       const { question, answers } = nextQuestion
 
@@ -37,7 +38,6 @@ const quiz = (app) => {
    })
 
    app.post('/answer/:pickedAnswer', (req, res) => {
-
       const currentQuestion = questions[correctAnswersCounter]
       const { correctAnswer } = currentQuestion
       const { pickedAnswer } = req.params
@@ -45,7 +45,15 @@ const quiz = (app) => {
       if (pickedAnswer == correctAnswer) {
          console.log('poprawna odpowiedź!')
          correctAnswersCounter++
+         res.cookie('correctAnswersCounter', correctAnswersCounter)
          const isWinner = correctAnswersCounter === questions.length ? true : false
+         if (isWinner) {
+            res.clearCookie('correctAnswersCounter')
+            res.clearCookie('isPhoneAFriendUsed')
+            res.clearCookie('isFiftyFiftyUsed')
+            res.clearCookie('isAskTheAudienceUsed')
+            correctAnswersCounter = 0
+         }
          res.json({
             answeredCorrect: true,
             correctAnswersCounter,
@@ -53,6 +61,11 @@ const quiz = (app) => {
          })
       } else {
          console.log('zła odpowiedź!')
+         res.clearCookie('correctAnswersCounter')
+         res.clearCookie('isPhoneAFriendUsed')
+         res.clearCookie('isFiftyFiftyUsed')
+         res.clearCookie('isAskTheAudienceUsed')
+         correctAnswersCounter = 0
          res.json({
             answeredCorrect: false,
          })
@@ -67,12 +80,14 @@ const quiz = (app) => {
 
       if (lifeline === 'phone-a-friend') {
          const friendAnswer = Math.random() > 0.2 ? `Wydaje mi się, że poprawna odpowiedź to: ${correctAnswer}` : 'Nie mam zielonego pojęcia...'
+         res.cookie('isPhoneAFriendUsed', true)
          res.json({
             friendAnswer,
          })
       } else if (lifeline === 'fifty-fifty') {
          const answersToRemove = answers.filter(answer => answer !== correctAnswer)
          answersToRemove.splice(Math.floor(Math.random() * answersToRemove.length), 1)
+         res.cookie('isFiftyFiftyUsed', true)
          res.json({
             answersToRemove,
          })
@@ -81,12 +96,13 @@ const quiz = (app) => {
          const goodAnswerIndex = answers.findIndex(answer => answer === correctAnswer)
          const chartsLastIndex = charts.length - 1
          for (let i = chartsLastIndex; i > 0; i--) {
-            const change = Math.floor(Math.random() * 20 - 10)
+            const change = Math.floor(Math.random() * 16 - 8)
             charts[i] += change
             charts[i - 1] -= change
          }
          charts.splice(goodAnswerIndex, 0, charts[chartsLastIndex])
          charts.splice(charts.length, 1)
+         res.cookie('isAskTheAudienceUsed', true)
          res.json({
             charts,
          })

@@ -1,11 +1,28 @@
 const answerButtons = document.querySelectorAll('.answer-button')
 const lifelineButtons = document.querySelectorAll('.lifeline-button')
 const friendAnswerField = document.querySelector('#lifeline-answer')
+const counter = document.querySelector('#gained-points')
 
-answerButtons.forEach(button => button.addEventListener('click', () => postAnswer(button)))
+const getCookie = (name) => {
+   const value = `; ${document.cookie}`;
+   const parts = value.split(`; ${name}=`);
+   if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
+const isPhoneAFriendUsed = getCookie('isPhoneAFriendUsed')
+const isFiftyFiftyUsed = getCookie('isFiftyFiftyUsed')
+const isAskTheAudienceUsed = getCookie('isAskTheAudienceUsed')
+const answeredQuestions = getCookie('correctAnswersCounter') || 0
+
+answerButtons.forEach(button => button.addEventListener('click', () => sendAnswer(button)))
 lifelineButtons.forEach(button => button.addEventListener('click', () => getLifeline(button)))
+counter.innerText = answeredQuestions
 
-const getNewQuestion = () => {
+if (isPhoneAFriendUsed) lifelineButtons[0].setAttribute('disabled', true)
+if (isFiftyFiftyUsed) lifelineButtons[1].setAttribute('disabled', true)
+if (isAskTheAudienceUsed) lifelineButtons[2].setAttribute('disabled', true)
+
+const fetchNewQuestion = () => {
    fetch('/question', { method: 'GET' })
       .then(response => response.json())
       .then(data => fillNewQuestion(data))
@@ -24,7 +41,7 @@ const fillNewQuestion = ({ question, answers }) => {
    }
 }
 
-const postAnswer = (button) => {
+const sendAnswer = (button) => {
    fetch(`/answer/${button.innerText}`, { method: 'POST' })
       .then(response => response.json())
       .then(data => chceckAnswer(data))
@@ -33,12 +50,12 @@ const postAnswer = (button) => {
 const chceckAnswer = ({ answeredCorrect, correctAnswersCounter, isWinner }) => {
    if (answeredCorrect) {
       console.log('poprawnie!')
-      const counter = document.querySelector('#gained-points')
+
       counter.innerText = correctAnswersCounter
       if (isWinner) {
          endGame(isWinner)
       } else {
-         getNewQuestion()
+         fetchNewQuestion()
       }
    } else {
       console.log('niepoprawnie!')
@@ -85,4 +102,4 @@ const showLifeline = (button, data) => {
    button.setAttribute('disabled', true)
 }
 
-getNewQuestion()
+fetchNewQuestion()
